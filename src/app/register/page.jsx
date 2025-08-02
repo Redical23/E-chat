@@ -45,7 +45,11 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+    <div className="min-h-screen flex items-center justify-center px-4"
+     style={{
+    backgroundImage: "url('/h2.png')",
+    backgroundSize: 'cover'
+  }}>
       <div className="w-full max-w-sm p-6 bg-white rounded-2xl shadow-md">
         <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">Register</h2>
 
@@ -55,7 +59,7 @@ export default function RegisterPage() {
             placeholder="Username"
             value={formData.username}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border text-black rounded"
             required
           />
           <input
@@ -64,7 +68,7 @@ export default function RegisterPage() {
             placeholder="Email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border text-black rounded"
             required
           />
           <input
@@ -73,7 +77,7 @@ export default function RegisterPage() {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border text-black rounded"
             required
           />
 
@@ -88,7 +92,7 @@ export default function RegisterPage() {
           </button>
         </form>
 
-        <p className="text-center text-sm mt-4">
+        <p className="text-center text-black text-sm mt-4">
           Already have an account?{' '}
           <a href="/" className="text-blue-600 hover:underline">Login</a>
         </p>

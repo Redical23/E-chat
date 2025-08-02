@@ -3,6 +3,8 @@
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
+import IMAGECROPPER from "../components/IMAGECROPPER";
+import { useModelContext } from "../context/Context"; // ⬅️ import the context
 
 export default function ProfilePage() {
   const { data: session, status, update } = useSession();
@@ -12,6 +14,8 @@ export default function ProfilePage() {
   const [image, setImage] = useState('');
   const [newImageFile, setNewImageFile] = useState(null);
   const [message, setMessage] = useState('');
+
+  const { isModelOpen, setIsModelOpen,updateAvtarURL,setupdateAvtarURL, } = useModelContext(); // ⬅️ use context
 
   useEffect(() => {
     if (session?.user) {
@@ -48,7 +52,7 @@ export default function ProfilePage() {
       const result = await res.json();
       setMessage('Profile updated successfully.');
       setEditMode(false);
-      await update(); // Refresh the session to reflect changes 
+      await update(); // Refresh session
       
     } catch (err) {
       console.error('Error updating profile:', err);
@@ -57,28 +61,37 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+    <div
+      className="min-h-screen flex items-center justify-center p-4"
+      style={{ backgroundImage: "url('/h3.jpg')" }}
+    >
       <div className="bg-white p-6 rounded-2xl shadow-md max-w-md w-full text-center">
-        <Image
-          src={
-            newImageFile
-              ? URL.createObjectURL(newImageFile)
-              : image || '/default-avatar.png'
-          }
-          alt="User Image"
-          width={100}
-          height={100}
-          className="rounded-full mx-auto mb-4 object-cover"
-        />
+
+        {/* Clickable Avatar when editMode is true */}
+        <div
+          className={`w-fit mx-auto mb-4 cursor-pointer ${
+            editMode ? 'hover:opacity-80' : ''
+          }`}
+          onClick={() => {
+            if (editMode) setIsModelOpen(true);
+          }}
+        >
+          <Image
+            src={
+              newImageFile
+                ? URL.createObjectURL(newImageFile)
+                : image || '/default-avatar.png'
+            }
+            alt="User Image"
+            width={100}
+            height={100}
+            className="rounded-full object-cover"
+          />
+        </div>
 
         {editMode ? (
           <>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setNewImageFile(e.target.files[0])}
-              className="mb-3 block mx-auto"
-            />
+            {/* Optional: Show raw file input if not using cropper */}
             <input
               type="text"
               value={username}
@@ -123,6 +136,9 @@ export default function ProfilePage() {
             </button>
           </>
         )}
+
+        {/* Show the image cropper modal when triggered */}
+   
 
         {message && (
           <p className="mt-4 text-sm text-red-500 font-medium">{message}</p>

@@ -4,9 +4,11 @@ import React, { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useModelContext } from '../../context/Context'; // adjust path as needed
 
 const Header = () => {
   const { data: session } = useSession();
+  const { updateAvtarURL } = useModelContext(); // avatar URL from context
   const [emailToAdd, setEmailToAdd] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -44,54 +46,54 @@ const Header = () => {
   };
 
   return (
-   <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm py-3 px-4 rounded-xl">
-  <div className="flex items-center justify-between">
-    {/* User Info */}
-    <div className="flex items-center space-x-4">
-      <Image
-        src={session?.user?.image || '/default-avatar.png'}
-        alt="Avatar"
-        width={40}
-        height={40}
-        className="rounded-full border-2 border-blue-600"
-      />
-      <div>
-        <p className="text-sm font-semibold text-gray-800 dark:text-white">
-          {session?.user?.name || 'User'}
-        </p>
-        <p className="text-xs text-gray-500 dark:text-gray-400">{session?.user?.email}</p>
+    <div className="bg-gradient-to-r from-[#1c2c3b] to-[#243544] text-white shadow-md px-6 py-4 rounded-b-xl">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+        {/* User Info */}
+        <div className="flex items-center gap-4">
+          <Image
+            src={updateAvtarURL || session?.user?.image || '/default-avatar.png'}
+            alt="Avatar"
+            width={40}
+            height={40}
+            className="rounded-full border-2 border-blue-500"
+          />
+          <div>
+            <p className="font-semibold">{session?.user?.name || 'User'}</p>
+            <p className="text-sm text-gray-300">{session?.user?.email}</p>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+          <input
+            type="email"
+            placeholder="Add user by email"
+            className="bg-[#2e3e4e] text-white placeholder-gray-400 px-4 py-2 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-auto"
+            value={emailToAdd}
+            onChange={(e) => setEmailToAdd(e.target.value)}
+          />
+          <button
+            onClick={handleAdd}
+            disabled={loading}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full text-sm transition"
+          >
+            {loading ? 'Adding...' : 'Add'}
+          </button>
+          <Link
+            href="/profile"
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full text-sm transition"
+          >
+            Profile
+          </Link>
+        </div>
       </div>
+
+      {message && (
+        <p className="text-sm text-gray-300 mt-2 text-center sm:text-left">
+          {message}
+        </p>
+      )}
     </div>
-
-    {/* Actions */}
-    <div className="flex flex-wrap gap-2 items-center">
-      <input
-        type="email"
-        placeholder="Add user by email"
-        className="px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-700 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-        value={emailToAdd}
-        onChange={(e) => setEmailToAdd(e.target.value)}
-      />
-      <button
-        onClick={handleAdd}
-        disabled={loading}
-        className="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
-      >
-        {loading ? 'Adding...' : 'Add'}
-      </button>
-      <Link
-        href="/profile"
-        className="px-4 py-1.5 text-sm bg-green-600 text-white rounded-full hover:bg-green-700 transition"
-      >
-        Profile
-      </Link>
-    
-    </div>
-  </div>
-
-  {message && <p className="text-xs mt-2 text-gray-600 dark:text-gray-400">{message}</p>}
-</div>
-
   );
 };
 
