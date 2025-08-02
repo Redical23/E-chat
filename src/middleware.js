@@ -27,6 +27,10 @@ export async function middleware(request) {
   return NextResponse.next();
 }
 
+
 export const config = {
-  matcher: ["/((?!api|_next|static|favicon.ico).*)"],
+  matcher: [
+    // Exclude: api routes, _next, static files, favicon, and anything with a file extension (e.g. .png, .jpg)
+    '/((?!api|_next|static|favicon.ico|.*\\..*).*)',
+  ],
 };
